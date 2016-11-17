@@ -8,7 +8,9 @@
  */
 
 // Apply the java plugin to add support for Java
+
 apply plugin: 'java'
+apply plugin: 'groovy'
 sourceCompatibility = 1.7
 version = '1.0‐snapshot'
 archivesBaseName = "sample-java"
@@ -61,6 +63,10 @@ dependencies {
 }
 */
 
+dependencies {
+
+
+}
 //Multi module print name
 Closure cl = { task -> println "I'm $task.project.name" }
 task('multi').doLast(cl)
@@ -87,7 +93,7 @@ project(':api') {
         println "Inside task"
     }
 }
-
+//tasks.create(name: 'namedTask')
 //Gradle tasks
 task compileDemo {
     doLast {
@@ -118,4 +124,30 @@ task dist(dependsOn: [compileDemo, testDemo]) {
             println "I'm task number $counter"
         }
     }
+}
+
+//Create custom task
+class DateTask extends DefaultTask {
+
+    String prefixText = "Today is:"
+
+    @TaskAction
+    void printDate() {
+        def dateTime = new Date()
+        println "${prefixText} ${dateTime.dateString}"
+    }
+}
+
+
+task customDateTask(type: DateTask)
+
+// Customize the greeting
+task today(type: DateTask) {
+    description "Display date"
+}
+
+
+task verboseToday(type: DateTask) {
+    description "Display polite message and date"
+    prefixText "I would like to inform you that today is:"
 }
