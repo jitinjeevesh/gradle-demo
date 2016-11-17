@@ -63,10 +63,6 @@ dependencies {
 }
 */
 
-dependencies {
-
-
-}
 //Multi module print name
 Closure cl = { task -> println "I'm $task.project.name" }
 task('multi').doLast(cl)
@@ -150,4 +146,26 @@ task today(type: DateTask) {
 task verboseToday(type: DateTask) {
     description "Display polite message and date"
     prefixText "I would like to inform you that today is:"
+}
+
+//Create custom plugin
+apply plugin: GreetingPlugin
+
+greeting.message = 'Hi from Gradle'
+
+class GreetingPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        // Add the 'greeting' extension object
+        project.extensions.create("greeting", GreetingPluginExtension)
+        // Add a task that uses the configuration
+        project.task('greetingTask') {
+            doLast {
+                println project.greeting.message
+            }
+        }
+    }
+}
+
+class GreetingPluginExtension {
+    def String message = 'Hello from GreetingPlugin'
 }
